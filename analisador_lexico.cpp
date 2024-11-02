@@ -22,10 +22,10 @@ unordered_map<string, string> criarTabelaDeTokens() {
         {"||", "OPERADOR_LOGICO"}, {"&&", "OPERADOR_LOGICO"}, {"!", "OPERADOR_LOGICO"}, {"=", "ATRIBUICAO"}, 
         {"+=", "OPERADOR_ATRIBUICAO"}, {"-=", "OPERADOR_ATRIBUICAO"}, {"*=", "OPERADOR_ATRIBUICAO"}, {"/=", "OPERADOR_ATRIBUICAO"}, 
         {"%=", "OPERADOR_ATRIBUICAO"}, {"int", "TIPO"}, {"float", "TIPO"}, {"string", "TIPO"}, {"if", "CONDICIONAL"}, 
-        {"else", "CONDICIONAL"}, {"for", "LAÇO"}, {"while", "LAÇO"}, {"break", "CONTROLE_FLUXO"}, 
-        {"continue", "CONTROLE_FLUXO"}, {"return", "CONTROLE_FLUXO"}, {"system", "FUNCAO"}, {"print", "FUNCAO"}, {"scan", "FUNCAO"}, 
+        {"else", "CONDICIONAL"}, {"for", "LAÇO"}, {"system", "Funcao"},{"println", "funcao"},{"while", "LAÇO"}, {"break", "CONTROLE_FLUXO"}, 
+        {"continue", "CONTROLE_FLUXO"}, {"return", "CONTROLE_FLUXO"}, {"print", "FUNCAO"}, {"scan", "FUNCAO"}, 
         {"in", "FUNCAO"}, {"out", "FUNCAO"}, {"main", "FUNCAO"}, {"(", "PARENTESES"}, {")", "PARENTESES"}, 
-        {"{", "CHAVE"}, {"}", "CHAVE"}, {";", "PONTO_VIRGULA"}, {",", "VIRGULA"}
+        {"{", "CHAVE"}, {"}", "CHAVE"}, {";", "PONTO_VIRGULA"}, {",", "VIRGULA"}, {".", "PONTO"}
     };
 }
 
@@ -92,12 +92,14 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
     while (i < codigo.size()) {
         char ch = codigo[i];
 
+        // Ignorar espaços e tabulações
         if (ch == ' ' || ch == '\t') {
             coluna++;
             i++;
             continue;
         }
 
+        // Ignorar quebras de linha fora de strings
         if (ch == '\n') {
             linha++;
             coluna = 1;
@@ -129,18 +131,25 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
                 continue;
             }
         }
+        // Verificar strings e \n dentro delas
         if (ch == '"') {
             size_t start_coluna = coluna;
             i++;
             coluna++;
 
+            // Identificar conteúdo da string, separando \n
             while (i < codigo.size() && codigo[i] != '"') {
-                if (codigo[i] == '\n') {
+                if (codigo.substr(i, 2) == "\\n") {
                     tokens.emplace_back("QUEBRA_LINHA", linha, coluna);
+                }
+                if (codigo[i] == '\n') {
+                    throw runtime_error("Erro: string não fechada na linha " + to_string(linha));
                 } 
                 i++;
                 coluna++;
             }
+
+
 
             if (i < codigo.size() && codigo[i] == '"') {
                 tokens.emplace_back("STRING", linha, start_coluna);
@@ -152,31 +161,69 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
             continue;
         }
 
-        if (isdigit(ch) || (ch == '-' && isdigit(codigo[i + 1]))) {
-            string numero;
-            size_t start_coluna = coluna;
-            while (i < codigo.size() && (isdigit(codigo[i]) || codigo[i] == '.' || (codigo[i] == 'x'))) {
-                numero += codigo[i];
-                i++;
-                coluna++;
-            }
+        // Verificar números
+if (isdigit(ch) || (ch == '-' && isdigit(codigo[i + 1]))) {
+    string numero;
+    size_t start_coluna = coluna;
+    bool pontoEncontrado = false;
+    bool xEncontrado = false;
+    bool ehHexadecimal = false;
 
-            if (isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
-            else if (isOctal(numero)) tokens.emplace_back("NUMERO_OCTAL", linha, start_coluna);
-            else if (isInteger(numero)) tokens.emplace_back("NUMERO_INTEIRO", linha, start_coluna);
-            else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLUTUANTE", linha, start_coluna);
-            else throw runtime_error("Erro: Número desconhecido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
-
+    // Loop de leitura do número
+    while (i < codigo.size() && (isdigit(codigo[i]) || codigo[i] == '.' || codigo[i] == 'x')) {
+        // Identifica e valida hexadecimal
+        if ((codigo[i] == 'x') && numero == "0") {
+            numero += codigo[i];
+            xEncontrado = true;
+            ehHexadecimal = true;
+            i++;
+            coluna++;
             continue;
         }
 
+        // Se hexadecimal, permite apenas caracteres hexadecimais
+        if (ehHexadecimal) {
+            if (!isxdigit(codigo[i])) break;
+        }
+        // Se não hexadecimal, permite apenas dígitos e um único ponto decimal
+        else {
+            if (codigo[i] == '.') {
+                if (pontoEncontrado){
+                    throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+                }
+                pontoEncontrado = true;
+            } else if (!isdigit(codigo[i])) {
+                break;
+            }
+        }
+
+        numero += codigo[i];
+        i++;
+        coluna++;
+    }
+
+    // Verificação: após a leitura do número, checa se o próximo caractere é válido
+    if (i < codigo.size() && (isalpha(codigo[i]) || codigo[i] == '_')) {
+        throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+    }
+
+    // Verifica e classifica o tipo do número
+    if (isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
+    else if (isOctal(numero)) tokens.emplace_back("NUMERO_OCTAL", linha, start_coluna);
+    else if (isInteger(numero)) tokens.emplace_back("NUMERO_INTEIRO", linha, start_coluna);
+    else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLUTUANTE", linha, start_coluna);
+    else throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+
+    continue;
+}
+
+
+        // Verificar identificadores e palavras-chave, tratando o ponto como um delimitador separado
         if (isalpha(ch) || ch == '_') {
             string lexema;
             size_t start_coluna = coluna;
-            bool pontoPresente = false;
 
-            while (i < codigo.size() && (isalnum(codigo[i]) || codigo[i] == '_' || (codigo[i] == '.' && isalpha(codigo[i + 1])))) {
-                if (codigo[i] == '.') pontoPresente = true;
+            while (i < codigo.size() && (isalnum(codigo[i]) || codigo[i] == '_')) {
                 lexema += codigo[i];
                 i++;
                 coluna++;
@@ -184,26 +231,21 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
 
             if (tabelaDeTokens.count(lexema) > 0) {
                 tokens.emplace_back(tabelaDeTokens.at(lexema), linha, start_coluna);
-            } else if (pontoPresente) {
-                for (size_t j = 0; j < lexema.size(); j++) {
-                    if (lexema[j] == '.') {
-                        tokens.emplace_back("PONTO", linha, start_coluna + j);
-                    } else {
-                        string subLexema;
-                        while (j < lexema.size() && lexema[j] != '.') {
-                            subLexema += lexema[j];
-                            j++;
-                        }
-                        tokens.emplace_back("VARIAVEL", linha, start_coluna);
-                        start_coluna += subLexema.size() + 1;
-                    }
-                }
             } else {
                 tokens.emplace_back("VARIAVEL", linha, start_coluna);
             }
             continue;
         }
 
+        // Tratar ponto como um token separado
+        if (ch == '.') {
+            tokens.emplace_back("PONTO", linha, coluna);
+            i++;
+            coluna++;
+            continue;
+        }
+
+        // Operadores compostos e símbolos únicos
         string op(1, ch);
         if (i + 1 < codigo.size()) {
             string op2 = op + codigo[i + 1];
