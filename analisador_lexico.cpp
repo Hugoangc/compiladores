@@ -143,7 +143,7 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
                     tokens.emplace_back("QUEBRA_LINHA", linha, coluna);
                 }
                 if (codigo[i] == '\n') {
-                    throw runtime_error("Erro: string não fechada na linha " + to_string(linha));
+                    throw runtime_error("Erro: string nao fechada na linha " + to_string(linha));
                 } 
                 i++;
                 coluna++;
@@ -154,7 +154,7 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
                 i++;
                 coluna++;
             } else {
-                throw runtime_error("Erro: string não fechada na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+                throw runtime_error("Erro: string nao fechada na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
             }
             continue;
         }
@@ -170,7 +170,7 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
                     tokens.emplace_back("QUEBRA_LINHA", linha, coluna);
                 }
                 if (codigo[i] == '\n') {
-                    throw runtime_error("Erro: string não fechada na linha " + to_string(linha));
+                    throw runtime_error("Erro: string nao fechada na linha " + to_string(linha));
                 } 
                 i++;
                 coluna++;
@@ -183,7 +183,7 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
                 i++;
                 coluna++;
             } else {
-                throw runtime_error("Erro: string não fechada na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+                throw runtime_error("Erro: string nao fechada na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
             }
             continue;
         }        
@@ -194,23 +194,23 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
             size_t start_coluna = coluna;
             bool pontoEncontrado = false;
             bool xEncontrado = false;
-            bool ehHexadecimal = false;
+            bool VAR_isHexadecimal = false;
 
             // Identificar se é hexadecimal
             if (ch == '0' && i + 1 < codigo.size() && codigo[i + 1] == 'x') {
-                ehHexadecimal = true;
+                VAR_isHexadecimal = true;
                 numero += "0x";
                 i += 2;
                 coluna += 2;
             }
 
             // Loop de leitura do número
-            while (i < codigo.size() && (isdigit(codigo[i]) || codigo[i] == '.' || (ehHexadecimal && isxdigit(codigo[i])))) {
-                if (!ehHexadecimal) {
+            while (i < codigo.size() && (isdigit(codigo[i]) || codigo[i] == '.' || (VAR_isHexadecimal && isxdigit(codigo[i])))) {
+                if (!VAR_isHexadecimal) {
                     // Caso geral para números inteiros ou flutuantes
                     if (codigo[i] == '.') {
                         if (pontoEncontrado) {
-                            throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+                            throw runtime_error("Erro: Numero invalido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
                         }
                         pontoEncontrado = true;
                     } else if (!isdigit(codigo[i])) {
@@ -224,15 +224,15 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
 
             // Verificação: após a leitura do número, checa se o próximo caractere é válido
             if (i < codigo.size() && (isalpha(codigo[i]) || codigo[i] == '_')) {
-                throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+                throw runtime_error("Erro: Numero invalido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
             }
 
             // Classifica o tipo do número
-            if (ehHexadecimal && isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
+            if (VAR_isHexadecimal && isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
             else if (isOctal(numero)) tokens.emplace_back("NUMERO_OCTAL", linha, start_coluna);
             else if (isInteger(numero)) tokens.emplace_back("NUMERO_INT", linha, start_coluna);
             else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLOAT", linha, start_coluna);
-            else throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+            else throw runtime_error("Erro: Numero invalido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
 
             continue;
         }
