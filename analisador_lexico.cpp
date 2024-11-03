@@ -17,15 +17,15 @@ struct Token {
 
 unordered_map<string, string> criarTabelaDeTokens() {
     return {
-        {"+", "OPERADOR"}, {"-", "OPERADOR"}, {"*", "OPERADOR"}, {"/", "OPERADOR"}, {"%", "OPERADOR"},
-        {"==", "OPERADOR"}, {"!=", "OPERADOR"}, {">", "OPERADOR"}, {">=", "OPERADOR"}, {"<", "OPERADOR"}, {"<=", "OPERADOR"},
-        {"||", "OPERADOR_LOGICO"}, {"&&", "OPERADOR_LOGICO"}, {"!", "OPERADOR_LOGICO"}, {"=", "ATRIBUICAO"}, 
-        {"+=", "OPERADOR_ATRIBUICAO"}, {"-=", "OPERADOR_ATRIBUICAO"}, {"*=", "OPERADOR_ATRIBUICAO"}, {"/=", "OPERADOR_ATRIBUICAO"}, 
-        {"%=", "OPERADOR_ATRIBUICAO"}, {"int", "TIPO"}, {"float", "TIPO"}, {"string", "TIPO"}, {"if", "CONDICIONAL"}, 
-        {"else", "CONDICIONAL"}, {"for", "LAÇO"}, {"system", "Funcao"},{"println", "funcao"},{"while", "LAÇO"}, {"break", "CONTROLE_FLUXO"}, 
-        {"continue", "CONTROLE_FLUXO"}, {"return", "CONTROLE_FLUXO"}, {"print", "FUNCAO"}, {"scan", "FUNCAO"}, 
-        {"in", "FUNCAO"}, {"out", "FUNCAO"}, {"main", "FUNCAO"}, {"(", "PARENTESES"}, {")", "PARENTESES"}, 
-        {"{", "CHAVE"}, {"}", "CHAVE"}, {";", "PONTO_VIRGULA"}, {",", "VIRGULA"}, {".", "PONTO"}
+        {"+", "OP_ADD"}, {"-", "OP_SUB"}, {"*", "OP_MULT"}, {"/", "OP_DIV"}, {"%", "OP_MOD"},
+        {"==", "OP_IGUAL"}, {"!=", "OP_DIF"}, {">", "OP_MAIOR"}, {">=", "OP_MAIOR_QUE"}, {"<", "OP_MENOR"}, {"<=", "OP_MENOR_QUE"},
+        {"||", "OP_OU_LOGICO"}, {"&&", "OP_&_LOGICO"}, {"!", "OP_NAO_LOGICO"}, {"=", "ATRIBUICAO"}, 
+        {"+=", "ATRIBUICAO_ADD"}, {"-=", "ATRIBUICAO_SUB"}, {"*=", "ATRIBUICAO_MULT"}, {"/=", "ATRIBUICAO_DIV"}, 
+        {"%=", "ATRIBUICAO_MOD"}, {"int", "TIPO_INT"}, {"float", "TIPO_FLOAT"}, {"string", "TIPO_STRING"}, {"if", "CONDICIONAL_IF"}, 
+        {"else", "CONDICIONAL_ELSE"}, {"for", "LACO_FOR"},{"while","LACO_WHILE"}, {"break", "CONTROLE_BREAK"}, {"continue", "CONTROLE_CONTINUE"},
+        {"return", "CONTROLE_RETURN"}, {"system", "FUNCAO_SYSTEM"}, {"out", "FUNCAO_OUT"}, {"print", "FUNCAO_PRINT"}, {"println", "FUNCAO_PRINTLN"},
+        {"in", "FUNCAO_IN"}, {"scan", "FUNCAO_SCAN"}, {"main", "FUNCAO_MAIN"}, {"(", "PARENTESES_ABRE"}, {")", "PARENTESES_FECHA"},
+        {"{", "CHAVE_ABRE"}, {"}", "CHAVE_FECHA"}, {";", "PONTO_VIRGULA"}, {",", "VIRGULA"}, {".", "PONTO"}, {"\"", "ASPAS_DUPLAS"}, {"\'", "ASPAS_SIMPLES"},
     };
 }
 
@@ -230,8 +230,8 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
             // Classifica o tipo do número
             if (ehHexadecimal && isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
             else if (isOctal(numero)) tokens.emplace_back("NUMERO_OCTAL", linha, start_coluna);
-            else if (isInteger(numero)) tokens.emplace_back("NUMERO_INTEIRO", linha, start_coluna);
-            else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLUTUANTE", linha, start_coluna);
+            else if (isInteger(numero)) tokens.emplace_back("NUMERO_INT", linha, start_coluna);
+            else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLOAT", linha, start_coluna);
             else throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
 
             continue;
