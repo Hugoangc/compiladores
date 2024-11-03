@@ -149,8 +149,6 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
                 coluna++;
             }
 
-
-
             if (i < codigo.size() && codigo[i] == '"') {
                 tokens.emplace_back("STRING", linha, start_coluna);
                 i++;
@@ -160,62 +158,85 @@ vector<Token> analisarCodigo(const string& codigo, const unordered_map<string, s
             }
             continue;
         }
-
-        // Verificar números
-if (isdigit(ch) || (ch == '-' && isdigit(codigo[i + 1]))) {
-    string numero;
-    size_t start_coluna = coluna;
-    bool pontoEncontrado = false;
-    bool xEncontrado = false;
-    bool ehHexadecimal = false;
-
-    // Loop de leitura do número
-    while (i < codigo.size() && (isdigit(codigo[i]) || codigo[i] == '.' || codigo[i] == 'x')) {
-        // Identifica e valida hexadecimal
-        if ((codigo[i] == 'x') && numero == "0") {
-            numero += codigo[i];
-            xEncontrado = true;
-            ehHexadecimal = true;
+        
+        if (ch == '\'') {
+            size_t start_coluna = coluna;
             i++;
             coluna++;
+
+            // Identificar conteúdo da string, separando \n
+            while (i < codigo.size() && codigo[i] != '\'') {
+                if (codigo.substr(i, 2) == "\\n") {
+                    tokens.emplace_back("QUEBRA_LINHA", linha, coluna);
+                }
+                if (codigo[i] == '\n') {
+                    throw runtime_error("Erro: string não fechada na linha " + to_string(linha));
+                } 
+                i++;
+                coluna++;
+            }
+
+
+
+            if (i < codigo.size() && codigo[i] == '\'') {
+                tokens.emplace_back("STRING", linha, start_coluna);
+                i++;
+                coluna++;
+            } else {
+                throw runtime_error("Erro: string não fechada na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+            }
+            continue;
+        }        
+
+        // Verificar números
+        if (isdigit(ch) || (ch == '-' && isdigit(codigo[i + 1])) || (ch == '0' && i + 1 < codigo.size() && codigo[i + 1] == 'x')) {
+            string numero;
+            size_t start_coluna = coluna;
+            bool pontoEncontrado = false;
+            bool xEncontrado = false;
+            bool ehHexadecimal = false;
+
+            // Identificar se é hexadecimal
+            if (ch == '0' && i + 1 < codigo.size() && codigo[i + 1] == 'x') {
+                ehHexadecimal = true;
+                numero += "0x";
+                i += 2;
+                coluna += 2;
+            }
+
+            // Loop de leitura do número
+            while (i < codigo.size() && (isdigit(codigo[i]) || codigo[i] == '.' || (ehHexadecimal && isxdigit(codigo[i])))) {
+                if (!ehHexadecimal) {
+                    // Caso geral para números inteiros ou flutuantes
+                    if (codigo[i] == '.') {
+                        if (pontoEncontrado) {
+                            throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+                        }
+                        pontoEncontrado = true;
+                    } else if (!isdigit(codigo[i])) {
+                        break;
+                    }
+                }
+                numero += codigo[i];
+                i++;
+                coluna++;
+            }
+
+            // Verificação: após a leitura do número, checa se o próximo caractere é válido
+            if (i < codigo.size() && (isalpha(codigo[i]) || codigo[i] == '_')) {
+                throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+            }
+
+            // Classifica o tipo do número
+            if (ehHexadecimal && isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
+            else if (isOctal(numero)) tokens.emplace_back("NUMERO_OCTAL", linha, start_coluna);
+            else if (isInteger(numero)) tokens.emplace_back("NUMERO_INTEIRO", linha, start_coluna);
+            else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLUTUANTE", linha, start_coluna);
+            else throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
+
             continue;
         }
 
-        // Se hexadecimal, permite apenas caracteres hexadecimais
-        if (ehHexadecimal) {
-            if (!isxdigit(codigo[i])) break;
-        }
-        // Se não hexadecimal, permite apenas dígitos e um único ponto decimal
-        else {
-            if (codigo[i] == '.') {
-                if (pontoEncontrado){
-                    throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
-                }
-                pontoEncontrado = true;
-            } else if (!isdigit(codigo[i])) {
-                break;
-            }
-        }
-
-        numero += codigo[i];
-        i++;
-        coluna++;
-    }
-
-    // Verificação: após a leitura do número, checa se o próximo caractere é válido
-    if (i < codigo.size() && (isalpha(codigo[i]) || codigo[i] == '_')) {
-        throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
-    }
-
-    // Verifica e classifica o tipo do número
-    if (isHexadecimal(numero)) tokens.emplace_back("NUMERO_HEXADECIMAL", linha, start_coluna);
-    else if (isOctal(numero)) tokens.emplace_back("NUMERO_OCTAL", linha, start_coluna);
-    else if (isInteger(numero)) tokens.emplace_back("NUMERO_INTEIRO", linha, start_coluna);
-    else if (isFloat(numero)) tokens.emplace_back("NUMERO_FLUTUANTE", linha, start_coluna);
-    else throw runtime_error("Erro: Número inválido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
-
-    continue;
-}
 
 
         // Verificar identificadores e palavras-chave, tratando o ponto como um delimitador separado
