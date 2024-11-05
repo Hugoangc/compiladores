@@ -1,0 +1,57 @@
++ Operadores e Símbolos
+1: +
+2: -
+3: *
+4: /
+5: %
+11: ==
+12: !=
+13: >
+14: >=
+15: <
+16: <=
+21: ||
+22: &&
+23: !
+24: =
+25: +=
+26: -=
+27: *=
+28: /=
+29: %=
+61: (
+62: )
+63: {
+64: }
+65: ;
+66: ,
+67: .
++ Palavras Reservadas e Identificadores Específicos
+31: int
+32: float
+33: string
+41: if
+42: else
+43: for
+44: while
+45: break
+46: continue
+47: return
+51: system
+52: out
+53: print
+54: println
+55: in
+56: scan
+57: main
++ Aspas e Quebras de Linha em Strings
+71: ", usado para início e fim de strings
+72: ', usado para início e fim de caracteres
+6: \n, apenas quando presente dentro de strings, separado como token.
+Tipos de Números
+101: hexadecimal
+102: octal
+103: float
+104: int
++ Outros
+99: identificadores gerais
