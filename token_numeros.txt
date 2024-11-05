@@ -54,4 +54,4 @@ Tipos de Números
 103: float
 104: int
 + Outros
-99: identificadores gerais
+99: identificadores gerais (variáveis)
