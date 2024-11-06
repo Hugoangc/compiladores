@@ -38,6 +38,7 @@ void imprimirTokens(const vector<Token>& tokens) {
              << ", coluna: " << token.coluna << "}" << endl;
     }
 }
+
 bool isInteger(const string& str) {
     size_t start = (str[0] == '-' ? 1 : 0);
     for (size_t i = start; i < str.size(); ++i) {
@@ -76,7 +77,6 @@ bool isOctal(const string& str) {
     return true;
 }
 
-
 string lerArquivo(const string& nome_arquivo) {
     ifstream arquivo(nome_arquivo);
     if (!arquivo.is_open()) {
@@ -94,7 +94,7 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
     while (i < codigo.size()) {
         char ch = codigo[i];
 
-        // Ignorar espaços e tabulações
+        // Ignorar espaços
         if (ch == ' ' || ch == '\t') {
             coluna++;
             i++;
@@ -111,13 +111,13 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
 
         // Ignorar comentários de linha e bloco
         if (ch == '/' && i + 1 < codigo.size()) {
-            if (codigo[i + 1] == '/') {  // Comentário de linha
+            if (codigo[i + 1] == '/') {
                 while (i < codigo.size() && codigo[i] != '\n') {
                     i++;
                     coluna++;
                 }
                 continue;
-            } else if (codigo[i + 1] == '*') {  // Comentário de bloco
+            } else if (codigo[i + 1] == '*') { // comentario de bloco
                 i += 2;
                 coluna += 2;
                 while (i < codigo.size() - 1 && !(codigo[i] == '*' && codigo[i + 1] == '/')) {
@@ -129,13 +129,13 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
                     }
                     i++;
                 }
-                i += 2; //Pular */
+                i += 2;
                 coluna += 2;
                 continue;
             }
         }
 
-        // Verificar strings e \n dentro delas
+        // Verificacao de String junto com \n dentro delas
         if (ch == '"') {
             size_t start_coluna = coluna;
             string lexema = "\"";
@@ -166,7 +166,9 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
             }
             continue;
         }
-        if (ch == '\'') { // Verificando aspas simples
+
+        // Mesma verificacao de aspas, mas com aspas simples
+        if (ch == '\'') {
             size_t start_coluna = coluna;
             string lexema = "'";
             i++;
@@ -197,30 +199,25 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
             continue;
         }
 
-
-        // Verificar palavras-chave e identificadores
+        // Verifica caracter em busca de palavras-chaves e variáveis
         if (isalpha(ch) || ch == '_') {
             size_t start_coluna = coluna;
             string lexema;
 
-            // Extrair a sequência de caracteres
             while (i < codigo.size() && (isalnum(codigo[i]) || codigo[i] == '_')) {
                 lexema += codigo[i];
                 i++;
                 coluna++;
             }
-
-            // Verificar se é uma palavra-chave
+            //Se nao for uma palavra chave, entao e uma variavel
             if (tabelaDeTokens.count(lexema) > 0) {
                 tokens.emplace_back(tabelaDeTokens.at(lexema), lexema, linha, start_coluna);
             } else {
-                // Se não, é um identificador
-                tokens.emplace_back(99, lexema, linha, start_coluna); // 99 como código para identificador
+                tokens.emplace_back(99, lexema, linha, start_coluna);
             }
             continue;
         }
 
-        // Verificar números
         if (isdigit(ch) || (ch == '-' && isdigit(codigo[i + 1])) || (ch == '0' && i + 1 < codigo.size() && codigo[i + 1] == 'x')) {
             string numero;
             size_t start_coluna = coluna;
@@ -228,6 +225,11 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
             bool xEncontrado = false;
             bool VAR_isHexadecimal = false;
 
+            if (ch == '-') {
+                numero += ch;
+                i++;
+                coluna++;
+            }
             // Identificar se é hexadecimal
             if (ch == '0' && i + 1 < codigo.size() && codigo[i + 1] == 'x') {
                 VAR_isHexadecimal = true;
@@ -262,7 +264,10 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
             if (VAR_isHexadecimal && isHexadecimal(numero)) tokens.emplace_back(101, numero, linha, start_coluna); // 101: hexadecimal
             else if (isOctal(numero)) tokens.emplace_back(102, numero, linha, start_coluna); // 102: octal
             else if (isInteger(numero)) tokens.emplace_back(104, numero, linha, start_coluna); // 104 : int
-            else if (isFloat(numero)) tokens.emplace_back(103, numero, linha, start_coluna); // 103: float
+            else if (isFloat(numero)){
+                numero += '0';
+                tokens.emplace_back(103, numero, linha, start_coluna); // 103: float
+            }
             else throw runtime_error("Erro: Numero invalido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
             continue;
         }
@@ -292,7 +297,6 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
     return tokens;
 }
 
-
 int main() {
     string nome_arquivo;
     cout << "Informe o nome do arquivo a ser analisado: ";
@@ -311,3 +315,4 @@ int main() {
 
     return 0;
 }
+
