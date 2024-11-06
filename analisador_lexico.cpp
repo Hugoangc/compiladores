@@ -24,7 +24,7 @@ unordered_map<string, int> criarTabelaDeTokens() {
         {"+=", 25}, {"-=", 26}, {"*=", 27}, {"/=", 28},
         {"%=", 29}, {"int", 31}, {"float", 32}, {"string", 33}, {"if", 41},
         {"else", 42}, {"for", 43}, {"while", 44}, {"break", 45}, {"continue", 46},
-        {"return", 47}, {"system", 51}, {"out", 52}, {"print", 53}, {"println", 54},
+        {"return", 47}, {"system", 51}, {"out", 52}, {"print", 53},
         {"in", 55}, {"scan", 56}, {"main", 57}, {"(", 61}, {")", 62},
         {"{", 63}, {"}", 64}, {";", 65}, {",", 66}, {".", 67}, {"\"", 71}, {"\'", 72},
     };
@@ -110,30 +110,48 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
         }
 
         // Ignorar comentários de linha e bloco
-        if (ch == '/' && i + 1 < codigo.size()) {
-            if (codigo[i + 1] == '/') {
-                while (i < codigo.size() && codigo[i] != '\n') {
-                    i++;
+    if (ch == '/' && i + 1 < codigo.size()) {
+        if (codigo[i + 1] == '/') {
+            // Ignorar o comentário de linha
+            while (i < codigo.size() && codigo[i] != '\n') {
+                i++;
+                coluna++;
+            }
+            continue;
+        } else if (codigo[i + 1] == '*') { // comentário de bloco
+            size_t start_linha = linha;
+            size_t start_coluna = coluna;
+            i += 2;
+            coluna += 2;
+            bool fechado = false;
+
+            // Avança até encontrar "*/" ou o final do código
+            while (i < codigo.size() - 1) {
+                if (codigo[i] == '*' && codigo[i + 1] == '/') {
+                    i += 2;
+                    coluna += 2;
+                    fechado = true;
+                    break;
+                }
+
+                if (codigo[i] == '\n') {
+                    linha++;
+                    coluna = 1;
+                } else {
                     coluna++;
                 }
-                continue;
-            } else if (codigo[i + 1] == '*') { // comentario de bloco
-                i += 2;
-                coluna += 2;
-                while (i < codigo.size() - 1 && !(codigo[i] == '*' && codigo[i + 1] == '/')) {
-                    if (codigo[i] == '\n') {
-                        linha++;
-                        coluna = 1;
-                    } else {
-                        coluna++;
-                    }
-                    i++;
-                }
-                i += 2;
-                coluna += 2;
-                continue;
+                i++;
             }
+
+            // Se não foi fechado, lança um erro indicando a posição inicial do comentário
+            if (!fechado) {
+                throw runtime_error("Erro: comentario de bloco iniciado na linha " + 
+                                    to_string(start_linha) + ", coluna " + 
+                                    to_string(start_coluna) + " não foi fechado.");
+            }
+            continue;
         }
+    }
 
         // Verificacao de String junto com \n dentro delas
         if (ch == '"') {
@@ -144,7 +162,11 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
 
             while (i < codigo.size() && codigo[i] != '"') {
                 if (codigo.substr(i, 2) == "\\n") {
-                    tokens.emplace_back(6, "\\n", linha, coluna);
+                    lexema += '\n';
+                    i += 2;
+                    coluna += 2;
+                } else if (codigo.substr(i, 2) == "\\t") {
+                    lexema += '\t';
                     i += 2;
                     coluna += 2;
                 } else if (codigo[i] == '\n') {
@@ -176,7 +198,11 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
 
             while (i < codigo.size() && codigo[i] != '\'') {
                 if (codigo.substr(i, 2) == "\\n") {
-                    tokens.emplace_back(6, "\\n", linha, coluna);
+                    lexema += '\n';
+                    i += 2;
+                    coluna += 2;
+                } else if (codigo.substr(i, 2) == "\\t") {
+                    lexema += '\t';
                     i += 2;
                     coluna += 2;
                 } else if (codigo[i] == '\n') {
@@ -200,11 +226,11 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
         }
 
         // Verifica caracter em busca de palavras-chaves e variáveis
-        if (isalpha(ch) || ch == '_') {
+        if (isalpha(ch)) {
             size_t start_coluna = coluna;
             string lexema;
 
-            while (i < codigo.size() && (isalnum(codigo[i]) || codigo[i] == '_')) {
+            while (i < codigo.size() && (isalnum(codigo[i]))) {
                 lexema += codigo[i];
                 i++;
                 coluna++;
@@ -226,7 +252,7 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
             bool VAR_isHexadecimal = false;
 
             if (ch == '-') {
-                numero += ch;
+                tokens.emplace_back(tabelaDeTokens.at("-"), "-", linha, coluna);
                 i++;
                 coluna++;
             }
@@ -257,7 +283,7 @@ vector<Token> analiseLexica(const string& codigo, const unordered_map<string, in
             }
 
             // Verificação: após a leitura do número, checa se o próximo caractere é válido
-            if (i < codigo.size() && (isalpha(codigo[i]) || codigo[i] == '_')) {
+            if (i < codigo.size() && (isalpha(codigo[i]))) {
                 throw runtime_error("Erro: Numero invalido na linha " + to_string(linha) + ", coluna " + to_string(start_coluna));
             }
 
