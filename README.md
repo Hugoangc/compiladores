@@ -32,4 +32,4 @@ Estrutura do Código:
 + Verificação de Tipos: Funções que determinam se uma string é um número inteiro, flutuante, hexadecimal ou octal.
 + imprimirTokens(): Função para exibir os tokens identificados.
 + lerArquivo(): Função que lê o conteúdo de um arquivo.
-+ analisarCodigo(): Função principal que processa o código-fonte e gera a lista de tokens.
++ analiseLexica(): Função principal que processa o código-fonte e gera a lista de tokens.
