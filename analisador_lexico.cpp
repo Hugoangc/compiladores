@@ -81,7 +81,7 @@ void imprimirTokens(const vector<Token> &tokens)
 
 bool isInteger(const string &str)
 {
-    size_t start = (str[0] == '-' ? 1 : 0);
+    size_t start = str[0];
     for (size_t i = start; i < str.size(); ++i)
     {
         if (!isdigit(str[i]))
@@ -92,7 +92,7 @@ bool isInteger(const string &str)
 
 bool isFloat(const string &str)
 {
-    size_t start = (str[0] == '-' ? 1 : 0);
+    size_t start = str[0];
     bool pointFound = false;
     for (size_t i = start; i < str.size(); ++i)
     {
