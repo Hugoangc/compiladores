@@ -361,7 +361,7 @@ vector<Token> analiseLexica(const string &codigo, const unordered_map<string, in
                 i++;
                 coluna++;
             }
-            // Identificar se é hexadecimal
+            // Identificar se é possui 0x
             if (ch == '0' && i + 1 < codigo.size() && codigo[i + 1] == 'x')
             {
                 VAR_isHexadecimal = true;
