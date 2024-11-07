@@ -29,7 +29,7 @@ teste3.java
 Estrutura do Código:
 + Token: Estrutura que representa um token com seu tipo, lexema, linha e coluna.
 + criarTabelaDeTokens(): Função que cria uma tabela de tokens (mapeamento de lexemas para seus tipos).
-+ Funções de Verificação: Funções que determinam se uma string é um número inteiro, flutuante, hexadecimal ou octal.
++ Verificação de Tipos: Funções que determinam se uma string é um número inteiro, flutuante, hexadecimal ou octal.
 + imprimirTokens(): Função para exibir os tokens identificados.
 + lerArquivo(): Função que lê o conteúdo de um arquivo.
-analisarCodigo(): Função principal que processa o código-fonte e gera a lista de tokens.
++ analisarCodigo(): Função principal que processa o código-fonte e gera a lista de tokens.
