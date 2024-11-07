@@ -40,14 +40,12 @@
 51: system
 52: out
 53: print
-54: println
 55: in
 56: scan
 57: main
 + Aspas e Quebras de Linha em Strings
 71: ", usado para início e fim de strings
 72: ', usado para início e fim de caracteres
-6: \n, apenas quando presente dentro de strings, separado como token.
 Tipos de Números
 101: hexadecimal
 102: octal
