@@ -1,6 +1,6 @@
 
 # Analisador Léxico em C++ 
-Este é um projeto de um analisador léxico escrito em C++ para a disciplina de Compiladores do CEFET-MG campus Leopoldina. <br/>
+Este é um projeto de um analisador léxico e sintático escrito em C++ para a disciplina de Compiladores do CEFET-MG campus Leopoldina. <br/>
 O objetivo é analisar um código-fonte em uma linguagem semelhante a Java, identificar tokens e classificá-los conforme suas características. 
 O analisador ignora comentários e mantém a contagem de linhas e colunas para relatórios de erros. <br/>
 
