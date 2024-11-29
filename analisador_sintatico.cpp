@@ -45,7 +45,7 @@ void program(const vector<Token> &tokens, int &tokenIndex)
   if (token.tipo != 62) // ')'
     erroSintaxe(token, "<program>. Esperava ')' e recebeu um ");
 
-  block(tokens, tokenIndex); // Processa o bloco principal
+  block(tokens, tokenIndex);
 
   if (tokenIndex < tokens.size()) // Roda novamente caso ainda possua código
     program(tokens, tokenIndex);
@@ -71,7 +71,7 @@ void stmtList(const vector<Token> &tokens, int &tokenIndex)
     return; // Caso vazio
   }
   stmt(tokens, tokenIndex);
-  stmtList(tokens, tokenIndex); // Chamada recursiva para o próximo stmt
+  stmtList(tokens, tokenIndex); 
 }
 
 void stmt(const std::vector<Token> &tokens, int &tokenIndex)
@@ -429,6 +429,6 @@ void fator(const vector<Token> &tokens, int &tokenIndex)
   }
   else
   {
-    erroSintaxe(token, "<fator>. Token recebido: ");
+    erroSintaxe(token, "<fator>. Programa encerrado de maneira inesperada. Ultimo token recebido: ");
   }
 }
