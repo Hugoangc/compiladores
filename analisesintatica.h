@@ -5,31 +5,32 @@
 #include "analiselexica.h"
 #ifndef ANALISESINTATICA_H
 #define ANALISESINTATICA_H
+using namespace std;
+void program(const vector<Token> &tokens, int &tokenIndex);
+void block(const vector<Token> &tokens, int &tokenIndex);
+void stmtList(const vector<Token> &tokens, int &tokenIndex);
+void stmt(const vector<Token> &tokens, int &tokenIndex);
+void declaration(const vector<Token> &tokens, int &tokenIndex);
+void identList(const vector<Token> &tokens, int &tokenIndex);
+void forStmt(const vector<Token> &tokens, int &tokenIndex);
+void ifStmt(const vector<Token> &tokens, int &tokenIndex);
+void ioStmt(const vector<Token> &tokens, int &tokenIndex);
+void whileStmt(const vector<Token> &tokens, int &tokenIndex);
+void atrib(const vector<Token> &tokens, int &tokenIndex);
+void outList(const vector<Token> &tokens, int &tokenIndex);
+void out(const vector<Token> &tokens, int &tokenIndex);
+void expr(const vector<Token> &tokens, int &tokenIndex);
+void orExpr(const vector<Token> &tokens, int &tokenIndex);
+void andExpr(const vector<Token> &tokens, int &tokenIndex);
+void notExpr(const vector<Token> &tokens, int &tokenIndex);
+void relExpr(const vector<Token> &tokens, int &tokenIndex);
+void addExpr(const vector<Token> &tokens, int &tokenIndex);
+void multExpr(const vector<Token> &tokens, int &tokenIndex);
+void unaryExpr(const vector<Token> &tokens, int &tokenIndex);
+void fator(const vector<Token> &tokens, int &tokenIndex);
 
-Token nextToken(const vector<Token> &tokens);
-Token peekToken(const vector<Token> &tokens);
-void erroSintaxe(const Token &token, const string &contexto = "");
-void program(const vector<Token> &tokens);
-void declaration(const vector<Token> &tokens);
-void block(const vector<Token> &tokens);
-void stmt(const vector<Token> &tokens);
-void forStmt(const vector<Token> &tokens);
-void whileStmt(const vector<Token> &tokens);
-void ifStmt(const vector<Token> &tokens);
-void verificaTipo(const Token &tipoVariavel, const Token &valor);
-string tipoParaString(int tipo);
-void expr(const vector<Token> &tokens);
-void relExpr(const vector<Token> &tokens);
-void addExpr(const vector<Token> &tokens);
-void multExpr(const vector<Token> &tokens);
-void optAtrib(const vector<Token> &tokens);
-void atrib(const vector<Token> &tokens);
-void orOp(std::vector<std::string> &tokens, size_t &index);
-void andOp(std::vector<std::string> &tokens, size_t &index);
-void notOp(std::vector<std::string> &tokens, size_t &index);
-void rel(std::vector<std::string> &tokens, size_t &index);
-void add(std::vector<std::string> &tokens, size_t &index);
-void mult(std::vector<std::string> &tokens, size_t &index);
-void uno(std::vector<std::string> &tokens, size_t &index);
-void fator(std::vector<std::string> &tokens, size_t &index);
+// Funções auxiliares
+Token nextToken(const vector<Token> &tokens, int &tokenIndex);
+Token peekToken(const vector<Token> &tokens, int &tokenIndex);
+void erroSintaxe(const Token &token, const string &contexto);
 #endif
