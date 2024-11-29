@@ -140,10 +140,8 @@ void identList(const vector<Token> &tokens, int &tokenIndex)
   { // ','
     nextToken(tokens, tokenIndex);
     token = nextToken(tokens, tokenIndex);
-    if (token.tipo == 65) // IDENT
-      break;
-    // VERIFICAR ISSO DAQUI DPS
-    // erroSintaxe(token, "<identList>. Esperava um identificador e recebeu um ");
+    if (token.tipo != 99) // IDEN
+      erroSintaxe(token, "<identList>. Esperava um identificador e recebeu um ");
   }
 }
 
@@ -288,20 +286,17 @@ void ioStmt(const vector<Token> &tokens, int &tokenIndex)
 
 void outList(const vector<Token> &tokens, int &tokenIndex)
 {
-  // Processa o primeiro <out>
   Token token = nextToken(tokens, tokenIndex);
   // Verifica 'STR', 'IDENT', 'NUMint', 'NUMdec', 'NUMfloat', 'NUMoct', 'NUMhex'
   if (token.tipo != 6 && token.tipo != 99 && token.tipo != 101 && token.tipo != 102 && token.tipo != 103 && token.tipo != 104)
     erroSintaxe(token, "<outList>. Esperava um 'STR', 'IDENT', 'NUMint', 'NUMdec', 'NUMfloat', 'NUMoct' ou 'NUMhex', recebeu um ");
 
-  // Verifica o <restoOutList> (se houver vírgula)
   token = peekToken(tokens, tokenIndex);
   if (token.tipo == 66) // Se for uma vírgula (',')
   {
     nextToken(tokens, tokenIndex);
     outList(tokens, tokenIndex);
   }
-  // Caso contrário, termina o <outList> (não há mais elementos na lista)
 }
 
 void whileStmt(const vector<Token> &tokens, int &tokenIndex)
@@ -421,7 +416,7 @@ void unaryExpr(const vector<Token> &tokens, int &tokenIndex)
 void fator(const vector<Token> &tokens, int &tokenIndex)
 {
   Token token = nextToken(tokens, tokenIndex);
-  if (token.tipo == 104 || token.tipo == 103 || token.tipo == 102 || token.tipo == 101 || token.tipo == 99 || token.tipo == 72) // Números, IDENT, STR
+  if (token.tipo == 104 || token.tipo == 103 || token.tipo == 102 || token.tipo == 101 || token.tipo == 99 || token.tipo == 6) // Números, IDENT, STR
     return;
   if (token.tipo == 61) // '('
   {
