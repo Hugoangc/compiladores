@@ -31,11 +31,11 @@ void program(const vector<Token> &tokens, int &tokenIndex)
   Token token = nextToken(tokens, tokenIndex);
   // Referente ao <type>
   if (token.tipo != 31 && token.tipo != 32 && token.tipo != 33) // int, float, string
-    erroSintaxe(token, "<program>. Esperava um <type> e recebeu um ");
+    erroSintaxe(token, "<program>. Esperava um tipo e recebeu um ");
 
   token = nextToken(tokens, tokenIndex);
-  if (token.lexema != "main")
-    erroSintaxe(token, "<program>. Esperava main e recebeu um ");
+  if (token.tipo != 99 && token.tipo != 57) // IDENT ou Main
+    erroSintaxe(token, "<program>. Esperava IDENT e recebeu um ");
 
   token = nextToken(tokens, tokenIndex);
   if (token.tipo != 61) // '('
@@ -46,6 +46,9 @@ void program(const vector<Token> &tokens, int &tokenIndex)
     erroSintaxe(token, "<program>. Esperava ')' e recebeu um ");
 
   block(tokens, tokenIndex); // Processa o bloco principal
+
+  if (tokenIndex < tokens.size()) // Roda novamente caso ainda possua código
+    program(tokens, tokenIndex);
 }
 
 void block(const vector<Token> &tokens, int &tokenIndex)
@@ -68,7 +71,7 @@ void stmtList(const vector<Token> &tokens, int &tokenIndex)
     return; // Caso vazio
   }
   stmt(tokens, tokenIndex);
-  stmtList(tokens, tokenIndex); 
+  stmtList(tokens, tokenIndex); // Chamada recursiva para o próximo stmt
 }
 
 void stmt(const std::vector<Token> &tokens, int &tokenIndex)
@@ -232,7 +235,7 @@ void ioStmt(const vector<Token> &tokens, int &tokenIndex)
     if (token.tipo != 61) // '('
       erroSintaxe(token, "<ioStmt>. Esperava um '(', recebeu um ");
 
-    // Verifica o tipo 
+    // Verifica o tipo (adicionando a verificação do <type>)
     token = nextToken(tokens, tokenIndex);
     if ((token.tipo != 31 && token.tipo != 32 && token.tipo != 33)) // Tipo, <type>: 'int', 'float' e 'string'
       erroSintaxe(token, "<ioStmt>. Esperava um tipo, recebeu um ");
@@ -333,7 +336,7 @@ void atrib(const vector<Token> &tokens, int &tokenIndex)
 
 void expr(const vector<Token> &tokens, int &tokenIndex)
 {
-  orExpr(tokens, tokenIndex);
+  orExpr(tokens, tokenIndex); // Inicia pela produção mais alta
 }
 
 void orExpr(const vector<Token> &tokens, int &tokenIndex)
