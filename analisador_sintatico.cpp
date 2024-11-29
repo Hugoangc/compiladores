@@ -68,7 +68,7 @@ void stmtList(const vector<Token> &tokens, int &tokenIndex)
     return; // Caso vazio
   }
   stmt(tokens, tokenIndex);
-  stmtList(tokens, tokenIndex); // Chamada recursiva para o próximo stmt
+  stmtList(tokens, tokenIndex); 
 }
 
 void stmt(const std::vector<Token> &tokens, int &tokenIndex)
@@ -140,7 +140,7 @@ void identList(const vector<Token> &tokens, int &tokenIndex)
   { // ','
     nextToken(tokens, tokenIndex);
     token = nextToken(tokens, tokenIndex);
-    if (token.tipo != 99) // IDEN
+    if (token.tipo != 99) // IDENT
       erroSintaxe(token, "<identList>. Esperava um identificador e recebeu um ");
   }
 }
@@ -232,7 +232,7 @@ void ioStmt(const vector<Token> &tokens, int &tokenIndex)
     if (token.tipo != 61) // '('
       erroSintaxe(token, "<ioStmt>. Esperava um '(', recebeu um ");
 
-    // Verifica o tipo (adicionando a verificação do <type>)
+    // Verifica o tipo 
     token = nextToken(tokens, tokenIndex);
     if ((token.tipo != 31 && token.tipo != 32 && token.tipo != 33)) // Tipo, <type>: 'int', 'float' e 'string'
       erroSintaxe(token, "<ioStmt>. Esperava um tipo, recebeu um ");
@@ -331,10 +331,9 @@ void atrib(const vector<Token> &tokens, int &tokenIndex)
   expr(tokens, tokenIndex);
 }
 
-/// @ ////////////A PARTIR DAQUI
 void expr(const vector<Token> &tokens, int &tokenIndex)
 {
-  orExpr(tokens, tokenIndex); // Inicia pela produção mais alta
+  orExpr(tokens, tokenIndex);
 }
 
 void orExpr(const vector<Token> &tokens, int &tokenIndex)
