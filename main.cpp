@@ -28,7 +28,7 @@ int main()
   {
     // Realiza a análise léxica (tokenização)
     vector<Token> tokens = analiseLexica(codigo, tabelaDeTokens);
-
+    int tokenIndex = 0;
     cout << "Tokens gerados:" << endl;
     for (const auto &token : tokens)
     {
@@ -37,7 +37,7 @@ int main()
            << "', linha: " << token.linha
            << ", coluna: " << token.coluna << endl;
     }
-    program(tokens); // Chama a função principal da análise sintática
+    program(tokens, tokenIndex); // Chama a função principal da análise sintática
     cout << "Analise sintatica concluida com sucesso!" << endl;
   }
   catch (const exception &e)
