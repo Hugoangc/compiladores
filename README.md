@@ -27,7 +27,7 @@ exemplo1.java
 ```
 
 ## Estrutura do Código:
-# Analisador Léxico:
+### Analisador Léxico:
 + Token: Estrutura que representa um token com seu tipo, lexema, linha e coluna.
 + criarTabelaDeTokens(): Função que cria uma tabela de tokens (mapeamento de lexemas para seus tipos).
 + Verificação de Tipos: Funções que determinam se uma string é um número inteiro, flutuante, hexadecimal ou octal.
@@ -35,7 +35,7 @@ exemplo1.java
 + lerArquivo(): Função que lê o conteúdo de um arquivo.
 + analiseLexica(): Função principal que processa o código-fonte e gera a lista de tokens.
 
-# Analisador Sintático:
+### Analisador Sintático:
 + O analisador sintático utiliza recursão descendente para verificar a conformidade do código com a gramática definida.
 + As funções de parsing são responsáveis por processar diferentes construções da linguagem, como:
   + program: Verifica a estrutura do programa, incluindo a presença da função `main`.
