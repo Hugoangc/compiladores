@@ -45,7 +45,6 @@ unordered_map<string, int> criarTabelaDeTokens()
         {"print", 53},
         {"in", 55},
         {"scan", 56},
-        {"main", 57},
         {"(", 61},
         {")", 62},
         {"{", 63},
