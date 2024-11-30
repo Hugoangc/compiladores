@@ -34,7 +34,7 @@ void program(const vector<Token> &tokens, int &tokenIndex)
     erroSintaxe(token, "<program>. Esperava um tipo e recebeu um ");
 
   token = nextToken(tokens, tokenIndex);
-  if (token.tipo != 99 && token.tipo != 57) // IDENT ou Main
+  if (token.tipo != 99) // IDENT
     erroSintaxe(token, "<program>. Esperava IDENT e recebeu um ");
 
   token = nextToken(tokens, tokenIndex);
