@@ -8,14 +8,14 @@ using namespace std;
 Token nextToken(const vector<Token> &tokens, int &tokenIndex)
 {
   if (tokenIndex >= tokens.size())
-    throw runtime_error("Fim inesperado do código.");
+    throw runtime_error("Fim inesperado do codigo.");
   return tokens[tokenIndex++];
 }
 
 Token peekToken(const vector<Token> &tokens, int &tokenIndex)
 {
   if (tokenIndex >= tokens.size())
-    throw runtime_error("Fim inesperado do código.");
+    throw runtime_error("Fim inesperado do codigo.");
   return tokens[tokenIndex];
 }
 void erroSintaxe(const Token &token, const string &contexto)
@@ -71,7 +71,7 @@ void stmtList(const vector<Token> &tokens, int &tokenIndex)
     return; // Caso vazio
   }
   stmt(tokens, tokenIndex);
-  stmtList(tokens, tokenIndex); 
+  stmtList(tokens, tokenIndex);
 }
 
 void stmt(const std::vector<Token> &tokens, int &tokenIndex)
@@ -118,7 +118,7 @@ void stmt(const std::vector<Token> &tokens, int &tokenIndex)
   }
   else
   {
-    erroSintaxe(token, "<stmt>");
+    erroSintaxe(token, "<stmt>. Esperava um <stmt>, recebeu um: ");
   }
 }
 
