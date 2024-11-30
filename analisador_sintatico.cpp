@@ -47,8 +47,11 @@ void program(const vector<Token> &tokens, int &tokenIndex)
 
   block(tokens, tokenIndex);
 
-  if (tokenIndex < tokens.size()) // Roda novamente caso ainda possua código
-    program(tokens, tokenIndex);
+  if (tokenIndex < tokens.size())
+  {
+    Token restante = nextToken(tokens, tokenIndex);
+    erroSintaxe(restante, "<program>. Codigo inesperado encontrado apos o termino do programa.");
+  }
 }
 
 void block(const vector<Token> &tokens, int &tokenIndex)
