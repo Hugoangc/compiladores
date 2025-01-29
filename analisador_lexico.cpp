@@ -4,18 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <cctype>
-
+#include "analiselexica.h"
 using namespace std;
-
-struct Token
-{
-    int tipo;
-    string lexema;
-    int linha;
-    int coluna;
-
-    Token(int t, string lex, int ln, int col) : tipo(t), lexema(lex), linha(ln), coluna(col) {}
-};
 
 unordered_map<string, int> criarTabelaDeTokens()
 {
@@ -55,7 +45,6 @@ unordered_map<string, int> criarTabelaDeTokens()
         {"print", 53},
         {"in", 55},
         {"scan", 56},
-        {"main", 57},
         {"(", 61},
         {")", 62},
         {"{", 63},
@@ -442,28 +431,4 @@ vector<Token> analiseLexica(const string &codigo, const unordered_map<string, in
     }
 
     return tokens;
-}
-
-int main()
-{
-    string nome_arquivo;
-    cout << "Informe o nome do arquivo a ser analisado: ";
-    cin >> nome_arquivo;
-
-    try
-    {
-        string codigo = lerArquivo(nome_arquivo);
-        if (!codigo.empty())
-        {
-            unordered_map<string, int> tabelaDeTokens = criarTabelaDeTokens();
-            vector<Token> tokens = analiseLexica(codigo, tabelaDeTokens);
-            imprimirTokens(tokens);
-        }
-    }
-    catch (const runtime_error &e)
-    {
-        cerr << e.what() << endl;
-    }
-
-    return 0;
 }

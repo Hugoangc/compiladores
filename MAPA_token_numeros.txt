@@ -46,10 +46,11 @@
 + Aspas e Quebras de Linha em Strings
 71: ", usado para início e fim de strings
 72: ', usado para início e fim de caracteres
-Tipos de Números
+Tipos
 101: hexadecimal
 102: octal
 103: float
 104: int
+6: string
 + Outros
 99: identificadores gerais (variáveis)
