@@ -221,13 +221,13 @@ void executarCall(const Instrucao &instrucao)
   if (comando == "PRINT")
   {
     Operando operando1 = get<2>(instrucao); // O que será impresso
-    Operando operando2 = get<3>(instrucao); // Opcional: variável para exibir valor
+    Operando operando2 = get<3>(instrucao); // Variável para exibir valor
 
-    // Verifica e imprime o operando1 (se não for vazio ou as aspas literais "")
+    // Sse não for vazio ou as aspas literais ""
     if (holds_alternative<string>(operando1))
     {
       string str = get<string>(operando1);
-      if (str == "\\n") // Caso especial: imprime uma nova linha
+      if (str == "\\n") // Imprime uma nova linha
       {
         cout << endl;
       }
@@ -237,7 +237,7 @@ void executarCall(const Instrucao &instrucao)
       }
     }
 
-    // Verifica e imprime o valor da variável (se existir)
+    // Verifica e imprime o valor da variável caso exista
     if (holds_alternative<string>(operando2))
     {
       string var = get<string>(operando2);
@@ -253,7 +253,7 @@ void executarCall(const Instrucao &instrucao)
   {
     string destino = get<string>(get<3>(instrucao)); // Nome da variável
     int valor;
-    cout << "Entrada para \"" << destino << "\": ";
+    // cout << "Entrada para \"" << destino << "\": ";
     cin >> valor;
 
     // Atualizar a tabela de variáveis
@@ -364,7 +364,6 @@ void carregarTuplas(const string &nomeArquivo)
     Operando op2 = interpretarOperando(tempOp2);
     Operando op3 = interpretarOperando(tempOp3);
 
-    // Adicionar a instrução à lista de tuplas
     tuplas.emplace_back(tempComando, op1, op2, op3);
   }
 
@@ -411,9 +410,12 @@ void executar()
 
 int main()
 {
+  string nome_arquivo;
+  cout << "Informe o nome do arquivo a ser analisado: ";
+  cin >> nome_arquivo;
   try
   {
-    carregarTuplas("text2.txt");
+    carregarTuplas(nome_arquivo); // Substituir pelo caminho correto
     carregarLabels();
     executar();
   }
