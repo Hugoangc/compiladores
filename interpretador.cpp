@@ -415,7 +415,7 @@ int main()
   cin >> nome_arquivo;
   try
   {
-    carregarTuplas(nome_arquivo); // Substituir pelo caminho correto
+    carregarTuplas(nome_arquivo); 
     carregarLabels();
     executar();
   }
