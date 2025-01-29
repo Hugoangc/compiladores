@@ -1,0 +1,11 @@
+('=', 'numBloco_0', 0, ""),
+('=', 'divBloco_0', 0, ""),
+('CALL', 'PRINT', 'Entre com o primeiro inteiro: ', ""),
+('CALL', 'SCAN', "", 'num1'),
+('CALL', 'PRINT', 'Entre com o segundo inteiro: ', ""),
+('CALL', 'SCAN', "", 'num2'),
+('+', '__temp0', 'num1', 'num2'),
+('CALL', 'PRINT', 'A soma eh: ', ""),
+('CALL', 'PRINT', "", '__temp0'),
+('CALL', 'PRINT', '\n', ""),
+('CALL', 'STOP', "", "")
