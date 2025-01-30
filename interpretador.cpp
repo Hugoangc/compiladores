@@ -58,6 +58,7 @@ void executarAtribuicao(const Instrucao &instrucao)
   string guardar = get<string>(get<1>(instrucao));
   Operando operando1 = get<2>(instrucao);
   criarVariavelSeNaoExistir(guardar);
+  // cout << "[DEBUG] Atribuindo " << obterValor(operando1) << " a " << guardar << endl;
   variaveis[guardar] = obterValor(operando1);
 }
 
@@ -70,6 +71,7 @@ void executarAritmetica(const Instrucao &instrucao)
 
   int v1 = obterValor(operando1);
   int v2 = obterValor(operando2);
+  // cout << "[DEBUG] Operacao " << operador << " em " << v1 << " e " << v2 << " -> Armazena em " << guardar << endl;
 
   if (operador == "+")
     variaveis[guardar] = v1 + v2;
@@ -165,12 +167,6 @@ void executarUnario(const Instrucao &instrucao)
 
 void executarIf(const Instrucao &instrucao)
 {
-  // cout << "DEBUG: Variaveis antes do IF:" << endl;
-  // for (const auto &par : variaveis)
-  // {
-  //   cout << par.first << " = " << par.second << endl;
-  // }
-
   Operando condicao = get<1>(instrucao);          // Condição é o segundo operando
   string label1 = get<string>(get<2>(instrucao)); // Primeiro label
   string label2 = get<string>(get<3>(instrucao)); // Segundo label
@@ -188,12 +184,12 @@ void executarIf(const Instrucao &instrucao)
 
   // cout << "Condicao do IF: " << valorCondicao << endl;
 
-  if (valorCondicao) // Condição verdadeira
+  if (valorCondicao)
   {
     // cout << "DEBUG: Condicao verdadeira, pulando para " << label1 << endl;
     ponteiro = labels[label1] - 1;
   }
-  else // Condição falsa
+  else
   {
     // cout << "DEBUG: Condicao falsa, pulando para " << label2 << endl;
     ponteiro = labels[label2] - 1;
@@ -415,7 +411,7 @@ int main()
   cin >> nome_arquivo;
   try
   {
-    carregarTuplas(nome_arquivo); 
+    carregarTuplas(nome_arquivo);
     carregarLabels();
     executar();
   }
